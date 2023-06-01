@@ -1,36 +1,32 @@
-import React from "react";
+import {useEffect, useState} from "react";
 import {api} from "../utils/api.js";
 import Card from './Card';
 
 
 function Main({onEditProfile, onAddPlace, onEditAvatar, onCardClick}) {
 
-  const [userName, setUserName] = React.useState('');
-  const [userDescription, setUserDescription] = React.useState('');
-  const [userAvatar, setUserAvatar] = React.useState('#');
-  const [cards, setCards] = React.useState([]);  
+  const [userName, setUserName] = useState('');
+  const [userDescription, setUserDescription] = useState('');
+  const [userAvatar, setUserAvatar] = useState('#');
+  const [cards, setCards] = useState([]);  
 
-  React.useEffect(() => {
+  useEffect(() => {
     api.getProfileInfo()
       .then(({name, about, avatar}) => {
         setUserName(name);
         setUserDescription(about);
         setUserAvatar(avatar);
       })
-  }, [])
-
-  React.useEffect(() => {
-    api.getInitialCards()
-      .then((data) => {
-        setCards(
-          data.map((item) => ({
-            id: item._id,
-            name: item.name,
-            link: item.link,
-            likes: item.likes.length
-          }))
-        );
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`)
       });
+      api.getInitialCards()
+      .then((data) => {
+        setCards(data);
+      })
+      .catch((err) => {
+        console.log(`Ошибка: ${err}`)
+      })   
   }, [])
 
   return (
@@ -54,10 +50,8 @@ function Main({onEditProfile, onAddPlace, onEditAvatar, onCardClick}) {
           {cards.map((item) => {
             return (
               <Card
-                key={item.id}
-                name={item.name}
-                link={item.link}
-                likes={item.likes}
+                key={item._id}
+                card={item}
                 onCardClick={onCardClick}
               />
             )

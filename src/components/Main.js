@@ -1,48 +1,27 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState, useContext} from "react";
+import { CurrentUserContext } from "../contexts/CurrentUserContext.js";
 import {api} from "../utils/api.js";
 import Card from './Card';
 
 
-function Main({onEditProfile, onAddPlace, onEditAvatar, onCardClick}) {
+function Main({onEditProfile, onAddPlace, onEditAvatar, onCardClick, onCardLike, onCardDelete, cards, setCards}) {
 
-  const [userName, setUserName] = useState('');
-  const [userDescription, setUserDescription] = useState('');
-  const [userAvatar, setUserAvatar] = useState('#');
-  const [cards, setCards] = useState([]);  
-
-  useEffect(() => {
-    api.getProfileInfo()
-      .then(({name, about, avatar}) => {
-        setUserName(name);
-        setUserDescription(about);
-        setUserAvatar(avatar);
-      })
-      .catch((err) => {
-        console.log(`Ошибка: ${err}`)
-      });
-      api.getInitialCards()
-      .then((data) => {
-        setCards(data);
-      })
-      .catch((err) => {
-        console.log(`Ошибка: ${err}`)
-      })   
-  }, [])
-
+  const currentUser = useContext(CurrentUserContext);
+  
   return (
       <main>
         <section className="profile">
           <button className="profile__avatar-hover" onClick={onEditAvatar}>
             <img 
               className="profile__avatar" 
-              src={userAvatar}
+              src={currentUser.avatar}
               alt="Аватар"
             />
           </button>
           <div className="profile__info">
-            <h1 className="profile__name">{userName}</h1>
+            <h1 className="profile__name">{currentUser.name}</h1>
             <button className="profile__edit-button" type="button" aria-label="Редактировать" onClick={onEditProfile}></button>
-            <p className="profile__description">{userDescription}</p>
+            <p className="profile__description">{currentUser.about}</p>
           </div>
           <button className="profile__add-button" type="button" aria-label="Добавить" onClick={onAddPlace}></button>
         </section>
@@ -53,6 +32,8 @@ function Main({onEditProfile, onAddPlace, onEditAvatar, onCardClick}) {
                 key={item._id}
                 card={item}
                 onCardClick={onCardClick}
+                onCardLike={onCardLike}
+                onCardDelete={onCardDelete}
               />
             )
           })}

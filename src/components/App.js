@@ -41,7 +41,7 @@ function App() {
 
   function handleUpdateUser({name, about}) {
     api.setProfileInfo({name, about})
-      .then(({name, about}) => setCurrentUser({name, about}))
+      .then((data) => setCurrentUser(data))
       .catch((err) => {
         console.log(`Ошибка: ${err}`)
       });

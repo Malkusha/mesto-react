@@ -42,19 +42,20 @@ function App() {
   function handleUpdateUser({name, about}) {
     api.setProfileInfo({name, about})
       .then((data) => setCurrentUser(data))
+      .then(closeAllPopups())
       .catch((err) => {
         console.log(`Ошибка: ${err}`)
       });
-    closeAllPopups();
+    
   }
 
   function handleUpdateAvatar({avatar}) {
     api.setAvatar({avatar})
       .then((data) => setCurrentUser(data))
+      .then(closeAllPopups())
       .catch((err) => {
         console.log(`Ошибка: ${err}`)
       });
-    closeAllPopups();
   }
 
   function handleEditAvatarClick() {
@@ -79,11 +80,10 @@ function App() {
   function handleAddPlaceSubmit(newCard) {
     api.loadNewCard(newCard)
       .then((newCard) => setCards([newCard, ...cards]))
+      .then(closeAllPopups())
       .catch((err) => {
         console.log(`Ошибка: ${err}`)
       });
-    
-    closeAllPopups();
   }
 
   function handleCardClick(card) {
